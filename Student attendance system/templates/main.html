@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Attendance System</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input {
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px;
+            margin: 3px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #ddd;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Student Attendance System</h1>
+
+    <h3>Add Student</h3>
+
+    <form action="/add_student" method="POST">
+
+        <input
+            type="text"
+            name="name"
+            placeholder="Enter student name"
+            required
+        >
+
+        <button type="submit">
+            Add Student
+        </button>
+
+    </form>
+
+
+    <h3>Attendance</h3>
+
+    <table>
+
+        <tr>
+            <th>S.No</th>
+            <th>Student Name</th>
+            <th>Present</th>
+            <th>Absent</th>
+            <th>Percentage</th>
+            <th>Action</th>
+        </tr>
+
+
+        {% for name, data in students.items() %}
+
+        {% set total = data.present + data.absent %}
+
+        {% if total > 0 %}
+            {% set percentage = (data.present / total) * 100 %}
+        {% else %}
+            {% set percentage = 0 %}
+        {% endif %}
+
+
+        <tr>
+
+            <td>{{ loop.index }}</td>
+
+            <td>{{ name }}</td>
+
+            <td>{{ data.present }}</td>
+
+            <td>{{ data.absent }}</td>
+
+            <td>
+                {{ "%.2f"|format(percentage) }}%
+            </td>
+
+            <td>
+
+                <form
+                    action="/attendance"
+                    method="POST"
+                    style="display:inline;"
+                >
+
+                    <input
+                        type="hidden"
+                        name="name"
+                        value="{{ name }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="status"
+                        value="present"
+                    >
+
+                    <button type="submit">
+                        Present
+                    </button>
+
+                </form>
+
+
+                <form
+                    action="/attendance"
+                    method="POST"
+                    style="display:inline;"
+                >
+
+                    <input
+                        type="hidden"
+                        name="name"
+                        value="{{ name }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="status"
+                        value="absent"
+                    >
+
+                    <button type="submit">
+                        Absent
+                    </button>
+
+                </form>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</body>
+
+</html>
